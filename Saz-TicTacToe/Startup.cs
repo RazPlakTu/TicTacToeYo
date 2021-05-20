@@ -26,6 +26,8 @@ namespace Saz_TicTacToe
       services.AddSingleton<IRepositoryState, RepositoryState>();
       services.AddTransient<IFileProvider, FileProvider>();
       services.AddTransient<IRepository, Repository>();
+      services.AddTransient<IGameService, GameService>();
+      services.AddTransient<IPlayerOptions, PlayerOptions>();
 
       services.AddControllersWithViews();
       // In production, the Angular files will be served from this directory
