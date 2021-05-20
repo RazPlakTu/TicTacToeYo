@@ -49,8 +49,8 @@ namespace Saz_TicTacToe.Controllers
     [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Get()
     {
-      //Todo: 
-      throw new NotImplementedException();
+      var rtx = await _repository.GetAllGameSaveAsync();
+      return new ObjectResult(rtx);
     }
   }
 }
