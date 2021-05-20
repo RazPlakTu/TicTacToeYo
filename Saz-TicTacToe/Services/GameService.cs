@@ -21,22 +21,48 @@ namespace Saz_TicTacToe.Services
 
     public string GetWinningPlayer(IEnumerable<string> gameBoard)
     {
-      throw new NotImplementedException();
+      var winningPosition = GetWinningPosition(gameBoard);
+      if (winningPosition != null)
+      {
+        return GetMatchedWinningPosition(gameBoard, winningPosition).First();
+      }
+
+      return gameBoard
+          .All(s => s != _playerOptions.Empty) ?
+          _playerOptions.Tie :
+          _playerOptions.Undertermined;
     }
 
     public List<int> GetWinningPosition(IEnumerable<string> gameBoard)
     {
-      throw new NotImplementedException();
+      foreach(var winningPosition in _playerOptions.WinningPositions)
+      {
+        var matchedWinningPositions = GetMatchedWinningPosition(gameBoard, winningPosition);
+        var firstPostion = matchedWinningPositions.First();
+
+        if (firstPostion != _playerOptions.Empty)
+        {
+          var isWinner = matchedWinningPositions.Skip(1).All(mp => mp == firstPostion);
+          if (isWinner)
+          {
+            return winningPosition;
+          }
+        }
+      }
+      return null;
     }
 
     public string NextPlayerToPlay(IEnumerable<string> gameBoard)
     {
-      throw new NotImplementedException();
+      return gameBoard.Count(p => p == _playerOptions.O) >=
+        gameBoard.Count(p => p == _playerOptions.X) ?
+        _playerOptions.X :
+        _playerOptions.O;
     }
 
-    public IEnumerable<string> PlayNextMove(IEnumerable<string> gameBoard, int nextPlayerPostion, string nextPlayer)
+    public IEnumerable<string> NextPlayerToMove(IEnumerable<string> gameBoard, int nextPlayerPostion, string nextPlayer)
     {
-      throw new NotImplementedException();
+      return gameBoard.Select((p, i) => i == nextPlayerPostion ? nextPlayer : p);
     }
 
     public void ValidateCurrent(IEnumerable<string> gameBoard)
@@ -57,6 +83,11 @@ namespace Saz_TicTacToe.Services
       {
         throw new ArgumentException($"Play cannot be made. {(playerDiffernece > 0 ? "X" : "O")} has {playerDiffernece} more plays than {(playerDiffernece < 0 ? "X" : "O")}.");
       }
+    }
+
+    private IEnumerable<string> GetMatchedWinningPosition(IEnumerable<string> gameBoard, IEnumerable<int> winningPosition)
+    {
+      return winningPosition.Select(p => gameBoard.ElementAt(p));
     }
   }
 }
