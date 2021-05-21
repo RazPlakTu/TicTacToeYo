@@ -9,6 +9,9 @@ namespace Saz_TicTacToe.Services
   {
     private readonly IPlayerOptions _playerOptions;
 
+    private readonly List<int> _winDoublethreatPositions = new List<int> { 1, 5, 1000 };
+    private static readonly List<int> _loseDoubleThreatPostions = new List<int> { 0, 4, 100 };
+
     public GameService(IPlayerOptions playerOptions)
     {
       _playerOptions = playerOptions;
@@ -16,7 +19,54 @@ namespace Saz_TicTacToe.Services
 
     public int GetPlayersNextPlayingPosition(IEnumerable<string> gameBoard, string nextPlayer)
     {
-      throw new NotImplementedException();
+      var player2 = nextPlayer == _playerOptions.X ? _playerOptions.O : _playerOptions.X;
+
+      var gameScoreCard = new List<int>
+      {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+      };
+
+      var allWinnablePosition = _playerOptions.WinningPositions.Where(pos => GetMatchedWinningPosition(gameBoard, pos).All(p => p != player2));
+
+      foreach (List<int> winnablePosition in allWinnablePosition)
+      {
+        var matchedWinPosition = GetMatchedWinningPosition(gameBoard, winnablePosition);
+        var playerCount = matchedWinPosition.Count(p => p == nextPlayer);
+        foreach (var postion in winnablePosition)
+        {
+          if (((List<string>)gameBoard)[postion] == _playerOptions.Empty)
+          {
+            gameScoreCard[postion] += _winDoublethreatPositions[playerCount];
+          }
+        }
+      }
+
+      var allLosablePositions = _playerOptions.WinningPositions.Where(pos => GetMatchedWinningPosition(gameBoard, pos).All(p => p != nextPlayer));
+
+      foreach (List<int> losablePosition in allLosablePositions)
+      {
+        var matchedlosePosition = GetMatchedWinningPosition(gameBoard, losablePosition);
+        var playerCount = matchedlosePosition.Count(p => p == player2);
+        foreach (var position in losablePosition)
+        {
+          if (((List<string>)gameBoard)[position] == _playerOptions.Empty)
+          {
+            gameScoreCard[position] += _loseDoubleThreatPostions[playerCount];
+          }
+        }
+      }
+
+      return Enumerable.Range(0, gameScoreCard.Count())
+          .Where(i => gameBoard.ElementAt(i) == _playerOptions.Empty)
+          .Aggregate((max, i) => gameScoreCard[max] > gameScoreCard[i] ? max : i);
     }
 
     public string GetWinningPlayer(IEnumerable<string> gameBoard)
@@ -60,7 +110,7 @@ namespace Saz_TicTacToe.Services
         _playerOptions.O;
     }
 
-    public IEnumerable<string> NextPlayerToMove(IEnumerable<string> gameBoard, int nextPlayerPostion, string nextPlayer)
+    public IEnumerable<string> PlayNextMove(IEnumerable<string> gameBoard, int nextPlayerPostion, string nextPlayer)
     {
       return gameBoard.Select((p, i) => i == nextPlayerPostion ? nextPlayer : p);
     }

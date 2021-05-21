@@ -45,6 +45,6 @@ namespace Saz_TicTacToe.Interfaces
     /// <param name="nextPlayerPostion">Represents the players position on the game board.</param>
     /// <param name="nextPlayer">Represents which players turn is it.</param>
     /// <returns></returns>
-    IEnumerable<string> NextPlayerToMove(IEnumerable<string> gameBoard, int nextPlayerPostion, string nextPlayer);
+    IEnumerable<string> PlayNextMove(IEnumerable<string> gameBoard, int nextPlayerPostion, string nextPlayer);
   }
 }

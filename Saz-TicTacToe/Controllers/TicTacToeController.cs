@@ -36,8 +36,35 @@ namespace Saz_TicTacToe.Controllers
     [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
     public IActionResult Post(IEnumerable<string> gameBoard)
     {
-      //Todo: 
-      throw new NotImplementedException();
+      var gameID = Guid.NewGuid().ToString();
+      _gameService.ValidateCurrent(gameBoard);
+      var playerWinner = _gameService.GetWinningPlayer(gameBoard);
+      var nextPlayer = _gameService.NextPlayerToPlay(gameBoard);
+
+      if (playerWinner == _playerOptions.Undertermined)
+      {
+        var nextPlayerPostion = _gameService.GetPlayersNextPlayingPosition(gameBoard, nextPlayer);
+        var resultingGameBoard = _gameService.PlayNextMove(gameBoard, nextPlayerPostion, nextPlayer);
+
+        return new ObjectResult(new GameSave(
+          gameID,
+          _gameService.GetWinningPlayer(resultingGameBoard),
+          _gameService.GetWinningPosition(resultingGameBoard),
+          resultingGameBoard
+          ));
+      }
+      else
+      {
+        var gameSave = new GameSave(
+          gameID,
+          _gameService.GetWinningPlayer(gameBoard),
+          _gameService.GetWinningPosition(gameBoard),
+          gameBoard
+          );
+
+        _repository.OutputGameSaveAsync(gameSave);
+        return new ObjectResult(gameSave);
+      }
     }
 
     /// <summary>
