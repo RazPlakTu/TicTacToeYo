@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Saz_TicTacToe.ExceptionHandler;
 using Saz_TicTacToe.Interfaces;
 using Saz_TicTacToe.Model;
 using Saz_TicTacToe.Services;
@@ -29,6 +30,8 @@ namespace Saz_TicTacToe
       services.AddTransient<IGameService, GameService>();
       services.AddTransient<IPlayerOptions, PlayerOptions>();
 
+      services.AddMvc(config => config.Filters.Add(typeof(GameServiceExceptionHandler)))
+       .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0);
       services.AddControllersWithViews();
       // In production, the Angular files will be served from this directory
       services.AddSpaStaticFiles(configuration =>
