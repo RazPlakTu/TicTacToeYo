@@ -147,3 +147,60 @@ RESPONSE:
     "Code": 1
 }
 ```
+
+#### Retrieve All Game Saves
+
+Request to retrive all saved or played gamess.
+
+Current Board 
+
+Request: 
+
+Get : https://localhost:44392/TicTacToe
+
+RESPONSE:
+
+```json
+[
+    {
+        "gameId": "68ae28f9-8261-404a-8fc2-ea8d030d7932",
+        "winner": "X",
+        "winPositions": [
+            0,
+            1,
+            2
+        ],
+        "gameBoard": [
+            "X",
+            "X",
+            "X",
+            "O",
+            "O",
+            "?",
+            "?",
+            "?",
+            "?"
+        ]
+    },
+    {
+        "gameId": "52367a32-f07a-4884-a4dc-bbb669ba1fd2",
+        "winner": "O",
+        "winPositions": [
+            0,
+            1,
+            2
+        ],
+        "gameBoard": [
+            "O",
+            "O",
+            "O",
+            "X",
+            "X",
+            "?",
+            "?",
+            "?",
+            "?"
+        ]
+    }
+]
+```
